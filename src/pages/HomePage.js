@@ -6,11 +6,12 @@ import { useHistory } from "react-router-dom";
 import PaginationBar from "../components/PaginationBar";
 import SearchForm from "../components/SearchForm";
 import api from "../apiService";
+import bookActions from "../redux/actions/book.actions";
+import { useDispatch, useSelector } from "react-redux";
 
 const BACKEND_API = process.env.REACT_APP_BACKEND_API;
-
 const HomePage = () => {
-  const [books, setBooks] = useState([]);
+  // const [books, setBooks] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const totalPage = 10;
   const limit = 10;
@@ -35,23 +36,30 @@ const HomePage = () => {
     setQuery(searchInput);
   };
 
+  const dispatch = useDispatch();
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        let url = `/books?_page=${pageNum}&_limit=${limit}`;
-        if (query) url += `&q=${query}`;
-        const res = await api.get(url);
-        console.log(res);
-        setBooks(res.data);
-        setErrorMessage("");
-      } catch (error) {
-        setErrorMessage(error.message);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [pageNum, limit, query]);
+    dispatch(bookActions.getBooks(pageNum, limit, query));
+  }, [dispatch, pageNum, limit, query]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       let url = `/books?_page=${pageNum}&_limit=${limit}`;
+  //       if (query) url += `&q=${query}`;
+  //       const res = await api.get(url);
+  //       console.log(res);
+  //       setBooks(res.data);
+  //       setErrorMessage("");
+  //     } catch (error) {
+  //       setErrorMessage(error.message);
+  //     }
+  //     setLoading(false);
+  //   };
+  //   fetchData();
+  // }, [pageNum, limit, query]);
+
+  const books = useSelector((state) => state.books.books);
 
   return (
     <Container>
