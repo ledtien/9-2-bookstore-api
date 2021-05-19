@@ -1,4 +1,5 @@
 const Author = require("../models/author");
+const Book = require("../models/book");
 
 const createAuthor = async (req, res) => {
   try {
@@ -18,11 +19,12 @@ const createAuthor = async (req, res) => {
 };
 
 const getSingleAuthor = async (req, res) => {
+  const books = await Book.find({ author: req.params.id });
   try {
     const author = await Author.findById(req.params.id);
     res.status(200).json({
       success: true,
-      data: author,
+      data: { author, books },
       message: `Author ${author.id} found!`,
     });
   } catch (error) {
