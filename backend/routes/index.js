@@ -10,4 +10,7 @@ router.use("/books", booksRouter);
 var genresRouter = require("./genres.api");
 router.use("/genres", genresRouter);
 
+var usersRouter = require("./users.api");
+router.use("/users", usersRouter);
+
 module.exports = router;
