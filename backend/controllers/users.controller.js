@@ -52,9 +52,11 @@ const getUsers = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  const tokenUserId = req.userId;
+
   try {
     const user = await User.findByIdAndUpdate(
-      req.params.id,
+      tokenUserId,
       { name: req.body.name },
       { new: true }
     );
@@ -115,6 +117,22 @@ const loginWithEmail = async (req, res, next) => {
   });
 };
 
+const getCurrentUser = async (req, res, next) => {
+  const userId = req.userId;
+  const user = await User.findById(userId);
+  if (!user)
+    return res.status(400).json({
+      success: false,
+
+      error: "User not found!",
+    });
+  return res.status(200).json({
+    success: true,
+    data: user,
+    message: "Get current user successfully!",
+  });
+};
+
 module.exports = {
   createUser,
   getSingleUser,
@@ -122,4 +140,5 @@ module.exports = {
   deleteUser,
   getUsers,
   loginWithEmail,
+  getCurrentUser,
 };
